@@ -1,0 +1,1059 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Lokesh Bandahalli Gopalakrishna, Senior Data Scientist. Production ML in finance, media, e-commerce and semiconductors: case studies, experience and contact.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Lokesh Gopalakrishna, Senior Data Scientist">
+<meta property="og:description" content="Lokesh Bandahalli Gopalakrishna, Senior Data Scientist. Production ML in finance, media, e-commerce and semiconductors: case studies, experience and contact.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230F1F20'/%3E%3Cpath d='M4 22l6-3 5 2 6-11 7 9' fill='none' stroke='%23E7EFEE' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='21' cy='10' r='3.4' fill='%23FF8B52'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<title>Lokesh Gopalakrishna</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap">
+<style>
+/* Layout: axis and plot. Mono section labels sit on a narrow left axis and content plots to the right.
+   Petrol marks what is expected; orange is reserved for the exception. */
+:root {
+  --ground: #F2F5F4;
+  --surface: #FFFFFF;
+  --ink: #0F1F20;
+  --ink-soft: #46595A;
+  --rule: #D3DCDA;
+  --expected: #0B6470;
+  --expected-wash: #D7E9E9;
+  --signal: #B8450F;
+  --signal-wash: #FBE7DB;
+
+  --font-display: "Bricolage Grotesque", "Avenir Next", "Segoe UI", system-ui, sans-serif;
+  --font-body: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;
+  --font-data: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+  --t-xs: 0.75rem;
+  --t-sm: 0.875rem;
+  --t-base: 1rem;
+  --t-lg: 1.25rem;
+  --t-xl: 1.75rem;
+  --t-2xl: clamp(2rem, 4.6vw, 2.75rem);
+  --t-hero: clamp(2.1rem, 9vw, 4.75rem);
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --ground: #0D1516;
+    --surface: #141F21;
+    --ink: #E7EFEE;
+    --ink-soft: #9CAFAE;
+    --rule: #26363A;
+    --expected: #63C3CD;
+    --expected-wash: #173238;
+    --signal: #FF8B52;
+    --signal-wash: #38211A;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --ground: #0D1516;
+  --surface: #141F21;
+  --ink: #E7EFEE;
+  --ink-soft: #9CAFAE;
+  --rule: #26363A;
+  --expected: #63C3CD;
+  --expected-wash: #173238;
+  --signal: #FF8B52;
+  --signal-wash: #38211A;
+  color-scheme: dark;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+[hidden] { display: none !important; }
+img { max-width: 100%; }
+html { scroll-behavior: smooth; scroll-padding-top: 4.5rem; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body {
+  margin: 0;
+  background: var(--ground);
+  color: var(--ink);
+  font: 400 var(--t-base)/1.6 var(--font-body);
+  -webkit-font-smoothing: antialiased;
+}
+h1, h2, h3, h4, p, ul, ol, dl, dd, figure { margin: 0; }
+h1, h2, h3, h4 { text-wrap: balance; }
+a { color: var(--expected); text-decoration-thickness: 1px; text-underline-offset: 0.2em; }
+a:hover { text-decoration-thickness: 2px; }
+:focus-visible { outline: 2px solid var(--expected); outline-offset: 2px; border-radius: 2px; }
+strong { font-weight: 600; }
+
+.wrap { max-width: 68rem; margin-inline: auto; padding-inline: clamp(1rem, 4vw, 2.5rem); }
+
+/* Top navigation */
+.nav {
+  position: sticky;
+  top: env(safe-area-inset-top, 0px);
+  z-index: 10;
+  background: var(--ground);
+  border-bottom: 1px solid var(--rule);
+}
+.nav-inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.25rem 1.25rem;
+  padding-block: 0.7rem;
+  font: 500 var(--t-xs)/1.4 var(--font-data);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.nav-links { display: flex; flex-wrap: wrap; gap: 0.25rem 1.25rem; list-style: none; padding: 0; }
+.nav a { color: var(--ink-soft); text-decoration: none; }
+.nav a:hover { color: var(--ink); text-decoration: underline; }
+@media (max-width: 30rem) { .nav-ext { display: none; } }
+
+/* Hero */
+.hero { display: grid; gap: 2.25rem; padding-block: clamp(2.5rem, 7vw, 4.5rem) clamp(2.5rem, 6vw, 4rem); }
+.hero-head { display: grid; gap: 1rem; }
+.kicker {
+  font: 500 var(--t-xs)/1.4 var(--font-data);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+.name {
+  font: 800 var(--t-hero)/0.95 var(--font-display);
+  letter-spacing: -0.025em;
+}
+.hero-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 2.25rem; align-items: start; }
+@media (min-width: 56rem) {
+  .hero-grid { grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: 3rem; }
+}
+.hero-text { display: grid; gap: 1.25rem; }
+.lede { font: 500 var(--t-lg)/1.4 var(--font-body); max-width: 30rem; }
+.support { color: var(--ink-soft); max-width: 30rem; }
+
+.contact-list { display: grid; gap: 0.6rem; padding-top: 0.5rem; }
+.contact-row { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem 0.75rem; min-width: 0; }
+.contact-key { flex: 0 0 4.5rem; }
+.contact-val { font: 400 var(--t-sm)/1.4 var(--font-data); user-select: all; overflow-wrap: anywhere; min-width: 0; }
+.btn {
+  font: 500 var(--t-xs)/1 var(--font-data);
+  letter-spacing: 0.04em;
+  color: var(--ink);
+  background: transparent;
+  border: 1px solid var(--ink-soft);
+  border-radius: 4px;
+  padding: 0.4rem 0.6rem;
+  cursor: pointer;
+}
+.btn:hover { background: var(--ink); color: var(--ground); border-color: var(--ink); }
+
+/* Demo card: the one element set off as its own object */
+.demo {
+  display: grid;
+  gap: 1rem;
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  padding: clamp(1rem, 3vw, 1.5rem);
+  min-width: 0;
+}
+.demo-head { display: grid; gap: 0.35rem; }
+.demo-title { font: 700 1.375rem/1.15 var(--font-display); letter-spacing: -0.01em; }
+.seg { display: flex; flex-wrap: wrap; }
+.seg-btn {
+  font: 500 var(--t-xs)/1 var(--font-data);
+  letter-spacing: 0.04em;
+  color: var(--ink);
+  background: transparent;
+  border: 1px solid var(--ink-soft);
+  padding: 0.55rem 0.8rem;
+  cursor: pointer;
+}
+.seg-btn:first-child { border-radius: 4px 0 0 4px; }
+.seg-btn:last-child { border-radius: 0 4px 4px 0; margin-left: -1px; }
+.seg-btn[aria-pressed="true"] { background: var(--ink); color: var(--surface); border-color: var(--ink); }
+.chart { min-height: 250px; min-width: 0; overflow: hidden; }
+.chart svg { display: block; max-width: 100%; height: auto; }
+.c-grid { stroke: var(--rule); stroke-width: 1; fill: none; }
+.c-ax { font: 400 11px var(--font-data); fill: var(--ink-soft); }
+.c-band { fill: var(--expected-wash); stroke: none; }
+.c-pred { fill: none; stroke: var(--expected); stroke-width: 1.25; stroke-dasharray: 3 3; }
+.c-thresh { fill: none; stroke: var(--ink-soft); stroke-width: 1.25; stroke-dasharray: 6 4; }
+.c-actual { fill: none; stroke: var(--ink); stroke-width: 1.75; stroke-linejoin: round; stroke-linecap: round; }
+.c-dot { fill: var(--ink); stroke: none; }
+.c-flag { fill: var(--signal); stroke: var(--surface); stroke-width: 2; }
+.c-note { font: 500 11px var(--font-data); fill: var(--signal); }
+.c-halo { paint-order: stroke; stroke: var(--surface); stroke-width: 4px; stroke-linejoin: round; }
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 1.1rem;
+  list-style: none;
+  padding: 0;
+  font: 400 var(--t-xs)/1.4 var(--font-data);
+  color: var(--ink-soft);
+}
+.legend li { display: flex; align-items: center; gap: 0.45rem; }
+.sw { flex: none; width: 18px; height: 10px; }
+.sw-line { height: 0; border-top: 2px solid var(--ink); }
+.sw-band { background: var(--expected-wash); border-block: 1px dashed var(--expected); }
+.sw-dash { height: 0; border-top: 2px dashed var(--ink-soft); }
+.sw-flag { width: 10px; border-radius: 50%; background: var(--signal); }
+.readout { font-size: var(--t-sm); min-height: 4.2em; }
+.fine { font-size: var(--t-xs); color: var(--ink-soft); }
+
+/* Sections on the axis */
+.section {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.25rem;
+  padding-block: 2.5rem;
+  border-top: 1px solid var(--rule);
+}
+.axis-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1rem;
+  list-style: none;
+  padding: 0.6rem 0 0;
+  font-size: var(--t-sm);
+}
+@media (min-width: 56rem) {
+  .section { grid-template-columns: 10.5rem minmax(0, 1fr); gap: 2.5rem; padding-block: 3.5rem; }
+  .axis-sticky { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 4.5rem); }
+  .axis-nav { flex-direction: column; }
+}
+.plot { display: grid; gap: 2rem; min-width: 0; }
+.intro { font-size: var(--t-lg); line-height: 1.45; max-width: 38rem; }
+
+/* Figures */
+.figs { display: grid; grid-template-columns: minmax(0, 1fr); gap: 1.5rem 1.5rem; }
+.figs-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+@media (min-width: 44rem) {
+  .figs-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .figs-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+.fig { display: grid; gap: 0.3rem; align-content: start; border-top: 1px solid var(--ink); padding-top: 0.75rem; min-width: 0; }
+.fig-n { font: 700 var(--t-xl)/1.05 var(--font-display); letter-spacing: -0.015em; font-variant-numeric: tabular-nums; }
+.fig-n-lg { font-size: var(--t-2xl); }
+.fig-t { font-size: var(--t-sm); line-height: 1.45; }
+.fig-s { font: 400 var(--t-xs)/1.4 var(--font-data); color: var(--ink-soft); }
+
+/* Case studies */
+.cases { display: grid; gap: 3.5rem; }
+.case { display: grid; gap: 2rem; min-width: 0; }
+.case-rule { border-top: 1px solid var(--rule); padding-top: 3.5rem; }
+.case-head { display: grid; gap: 0.6rem; }
+.case-title { font: 800 var(--t-2xl)/1.02 var(--font-display); letter-spacing: -0.02em; }
+.dek { font-size: var(--t-lg); line-height: 1.45; max-width: 40rem; }
+.block { display: grid; gap: 0.85rem; min-width: 0; }
+.block-title { font: 700 1.125rem/1.25 var(--font-display); }
+.prose { max-width: 38rem; }
+.pull {
+  font: 600 var(--t-xl)/1.15 var(--font-display);
+  letter-spacing: -0.015em;
+  max-width: 32rem;
+  text-wrap: balance;
+}
+
+.stages { display: grid; grid-template-columns: minmax(0, 1fr); gap: 1.25rem; list-style: none; padding: 0; }
+@media (min-width: 44rem) { .stages-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (min-width: 56rem) {
+  .stages-loop { grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 1rem; }
+  .stage-wide { grid-column: span 2; }
+}
+.stage { display: grid; gap: 0.4rem; align-content: start; border-top: 2px solid var(--ink); padding-top: 0.75rem; min-width: 0; font-size: var(--t-sm); line-height: 1.5; }
+.stage-n { font: 500 var(--t-xs)/1.4 var(--font-data); letter-spacing: 0.08em; color: var(--ink-soft); }
+.stage-name { font: 700 1.25rem/1.15 var(--font-display); }
+.stage-name-sm { font-size: 1.0625rem; }
+.stage-q { font-weight: 600; }
+.stage-how { font: 400 var(--t-xs)/1.5 var(--font-data); color: var(--ink-soft); padding-top: 0.25rem; }
+.stage-hot { border-top-color: var(--signal); background: var(--signal-wash); padding: 0.75rem; border-radius: 0 0 4px 4px; }
+.was-now { display: grid; gap: 0.35rem; }
+.tag { font: 500 var(--t-xs)/1.4 var(--font-data); letter-spacing: 0.06em; text-transform: uppercase; color: var(--signal); }
+
+.flow { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 0; list-style: none; padding: 0; font-size: var(--t-sm); }
+.flow li { display: flex; align-items: center; }
+.flow-chip { background: var(--surface); border: 1px solid var(--rule); border-radius: 4px; padding: 0.35rem 0.65rem; }
+.flow li:not(:last-child)::after { content: "\2192"; color: var(--ink-soft); padding-inline: 0.45rem; }
+
+.checks { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.25rem; list-style: none; padding: 0; }
+@media (min-width: 44rem) { .checks { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+
+.scroll { overflow-x: auto; }
+.tbl { width: 100%; border-collapse: collapse; font-size: var(--t-sm); line-height: 1.5; }
+.tbl th {
+  text-align: left;
+  font: 500 var(--t-xs)/1.4 var(--font-data);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  padding: 0 1rem 0.5rem 0;
+  border-bottom: 1px solid var(--ink);
+}
+.tbl td { vertical-align: top; padding: 0.7rem 1rem 0.7rem 0; border-bottom: 1px solid var(--rule); }
+.tbl .lead { width: 40%; font-weight: 500; }
+.cell-tag { display: block; font: 500 var(--t-xs)/1.4 var(--font-data); letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-soft); padding-bottom: 0.15rem; }
+
+.mores { border-bottom: 1px solid var(--rule); }
+.more { border-top: 1px solid var(--rule); }
+.more-sum {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+  list-style: none;
+  cursor: pointer;
+  padding-block: 0.8rem;
+  font-weight: 500;
+}
+.more-sum::-webkit-details-marker { display: none; }
+.more-sum::after { content: "+"; font: 400 1.125rem/1 var(--font-data); color: var(--ink-soft); }
+.more[open] > .more-sum::after { content: "\2212"; }
+.more-body { display: grid; gap: 0.85rem; padding-bottom: 1.5rem; font-size: var(--t-sm); line-height: 1.55; }
+.more-body ul { padding-left: 1.1rem; display: grid; gap: 0.4rem; max-width: 40rem; }
+.stack { font: 400 var(--t-xs)/1.8 var(--font-data); color: var(--ink-soft); }
+.stack b { font-weight: 500; color: var(--ink); letter-spacing: 0.06em; text-transform: uppercase; padding-right: 0.5rem; }
+
+/* Experience, skills, education */
+.rows { display: grid; gap: 2.5rem; }
+.row { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0.5rem 1.5rem; }
+@media (min-width: 44rem) { .row { grid-template-columns: 9.5rem minmax(0, 1fr); } }
+.row-key { font: 400 var(--t-xs)/1.5 var(--font-data); color: var(--ink-soft); padding-top: 0.3rem; }
+.row-body { display: grid; gap: 0.5rem; min-width: 0; }
+.row-title { font: 700 1.25rem/1.2 var(--font-display); }
+.row-sub { font-size: var(--t-sm); color: var(--ink-soft); }
+.bullets { padding-left: 1.1rem; display: grid; gap: 0.55rem; max-width: 40rem; padding-top: 0.25rem; }
+.rows-tight { gap: 1.25rem; }
+
+.foot { border-top: 1px solid var(--rule); padding-block: 1.5rem 2.5rem; }
+</style>
+</head>
+<body>
+
+<nav class="nav" aria-label="Sections">
+  <div class="wrap nav-inner">
+    <ul class="nav-links">
+      <li><a href="#work">Work</a></li>
+      <li><a href="#experience">Experience</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <a class="nav-ext" href="https://www.linkedin.com/in/lokeshbg" target="_blank" rel="noopener">LinkedIn &#8599;</a>
+  </div>
+</nav>
+
+<main class="wrap">
+
+  <header class="hero">
+    <div class="hero-head">
+      <p class="kicker">Senior Data Scientist &middot; 8+ years in production ML</p>
+      <h1 class="name">Lokesh Bandahalli Gopalakrishna</h1>
+    </div>
+
+    <div class="hero-grid">
+      <div class="hero-text">
+        <p class="lede">I build ML systems that take repetitive expert review off people's desks, so analysts, engineers and editors can spend their time on the exceptions.</p>
+        <p class="support">Eight years of end-to-end ownership across ML, NLP, GenAI and time series, in finance, media, e-commerce and semiconductors. Most recently at Workday, where I designed and built Flux Capacitor.</p>
+        <div class="contact-list">
+          <div class="contact-row">
+            <span class="kicker contact-key">Email</span>
+            <a class="contact-val" id="email-top" href="mailto:lokeshbg180@gmail.com">lokeshbg180@gmail.com</a>
+            <button class="btn" type="button" id="copy-top" data-copy="lokeshbg180@gmail.com" data-target="email-top">Copy</button>
+          </div>
+          <div class="contact-row">
+            <span class="kicker contact-key">LinkedIn</span>
+            <a class="contact-val" href="https://www.linkedin.com/in/lokeshbg" target="_blank" rel="noopener">linkedin.com/in/lokeshbg</a>
+          </div>
+        </div>
+      </div>
+
+      <section class="demo" aria-labelledby="demo-title">
+        <div class="demo-head">
+          <p class="kicker">Try it &middot; the idea behind Flux Capacitor</p>
+          <h2 class="demo-title" id="demo-title">One account, two ways to flag it</h2>
+        </div>
+        <div class="seg" role="group" aria-label="Flagging method">
+          <button class="seg-btn" type="button" id="mode-threshold" data-mode="threshold" aria-pressed="false">Fixed threshold</button>
+          <button class="seg-btn" type="button" id="mode-range" data-mode="range" aria-pressed="true">Learned range</button>
+        </div>
+        <div class="chart" id="flux-chart"></div>
+        <ul class="legend">
+          <li><span class="sw sw-line"></span>Actual balance</li>
+          <li data-for="range"><span class="sw sw-band"></span>Expected range, 80% interval</li>
+          <li data-for="threshold" hidden><span class="sw sw-dash"></span>Fixed threshold</li>
+          <li><span class="sw sw-flag"></span>Flagged for review</li>
+        </ul>
+        <p class="readout" id="flux-readout" aria-live="polite"><strong>1 month flagged.</strong> The summer peak sits inside the expected range, so nobody has to explain it. October breaks the pattern.</p>
+        <p class="fine">Illustrative account history, balance indexed to 100.</p>
+      </section>
+    </div>
+  </header>
+
+  <section class="section" aria-labelledby="outcomes-h">
+    <div class="axis"><h2 class="kicker" id="outcomes-h">Outcomes</h2></div>
+    <div class="plot">
+      <div class="figs figs-4">
+        <div class="fig">
+          <span class="fig-n fig-n-lg">~50%</span>
+          <span class="fig-t">less manual analysis at month- and quarter-end close</span>
+          <span class="fig-s">Workday</span>
+        </div>
+        <div class="fig">
+          <span class="fig-n fig-n-lg">+11.2%</span>
+          <span class="fig-t">hours watched per visitor, A/B tested on 1,000+ titles</span>
+          <span class="fig-s">Gracenote</span>
+        </div>
+        <div class="fig">
+          <span class="fig-n fig-n-lg">95%</span>
+          <span class="fig-t">accuracy classifying wafer defect images into 8 classes</span>
+          <span class="fig-s">Intel</span>
+        </div>
+        <div class="fig">
+          <span class="fig-n fig-n-lg">$2M</span>
+          <span class="fig-t">estimated incremental annual revenue from a recommender</span>
+          <span class="fig-s">Thrive Market</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="work" aria-labelledby="work-h">
+    <div class="axis">
+      <div class="axis-sticky">
+        <h2 class="kicker" id="work-h">Selected work</h2>
+        <ul class="axis-nav">
+          <li><a href="#flux">Flux Capacitor</a></li>
+          <li><a href="#sem">SEM defects</a></li>
+          <li><a href="#imagery">Personalized Imagery</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="plot">
+      <p class="intro">Three projects that follow one pattern: automate the routine review, and leave the judgment calls to people.</p>
+
+      <div class="cases">
+
+        <!-- Flux Capacitor -->
+        <article class="case" id="flux">
+          <header class="case-head">
+            <p class="kicker">Workday &middot; 2024&ndash;2026 &middot; Finance operations</p>
+            <h3 class="case-title">Flux Capacitor</h3>
+            <p class="dek">An ML engine that finds the account movements worth explaining at month-end close, traces them to the journal lines behind them, and drafts the explanation.</p>
+          </header>
+
+          <div class="block">
+            <h4 class="block-title">The problem</h4>
+            <p class="prose">Every month, balances move in hundreds of accounts and finance has to explain the important changes. The old way was a spreadsheet export and a fixed rule, such as anything over 10%. Seasonal accounts tripped that rule every cycle, large accounts hid material dollar swings under it, and analysts spent three to four days per account searching journal entries for the cause.</p>
+            <p class="pull">Stop explaining every variance. Explain the ones that matter.</p>
+          </div>
+
+          <div class="block">
+            <h4 class="block-title">How it works</h4>
+            <ol class="stages stages-3">
+              <li class="stage">
+                <span class="stage-n">01</span>
+                <span class="stage-name">Detect</span>
+                <span class="stage-q">Which movements deserve attention?</span>
+                <span>One forecasting model per account and flux category learns its trend and seasonality. A balance outside the 80% prediction interval is flagged.</span>
+                <span class="stage-how">LightGBM, SARIMA and Holt-Winters, chosen per series in H2O.ai</span>
+              </li>
+              <li class="stage">
+                <span class="stage-n">02</span>
+                <span class="stage-name">Decode</span>
+                <span class="stage-q">Which transactions caused them?</span>
+                <span>Engineered features on every journal line feed three outlier models. A line surfaces only when at least two agree, and SHAP shows why.</span>
+                <span class="stage-how">One-class SVM, local outlier factor, isolation forest</span>
+              </li>
+              <li class="stage">
+                <span class="stage-n">03</span>
+                <span class="stage-name">Diagnose</span>
+                <span class="stage-q">What should the analyst say?</span>
+                <span>An LLM drafts the commentary from those findings. Every figure comes from the pipeline, and nothing is final until an analyst approves it.</span>
+                <span class="stage-how">Scored against a gold-standard set for accuracy and completeness</span>
+              </li>
+            </ol>
+            <ol class="flow" aria-label="Data pipeline">
+              <li><span class="flow-chip">Workday ledger and journal data, by API</span></li>
+              <li><span class="flow-chip">Bronze</span></li>
+              <li><span class="flow-chip">Silver</span></li>
+              <li><span class="flow-chip">Gold Delta tables</span></li>
+              <li><span class="flow-chip">Month-end Databricks job</span></li>
+              <li><span class="flow-chip">Results tables</span></li>
+              <li><span class="flow-chip">Stakeholder dashboard</span></li>
+            </ol>
+          </div>
+
+          <div class="block">
+            <h4 class="block-title">What changed at month end</h4>
+            <div class="figs figs-4">
+              <div class="fig">
+                <span class="fig-n">&lt; 2 hours</span>
+                <span class="fig-t">per account for variance analysis, down from 3&ndash;4 days</span>
+              </div>
+              <div class="fig">
+                <span class="fig-n">170+</span>
+                <span class="fig-t">accounts covered, each with 5&ndash;15 flux categories</span>
+              </div>
+              <div class="fig">
+                <span class="fig-n">80%</span>
+                <span class="fig-t">of flux explained per account on average, over six months</span>
+              </div>
+              <div class="fig">
+                <span class="fig-n">~50%</span>
+                <span class="fig-t">less manual analysis effort for Treasury, Tax and AP/AR</span>
+              </div>
+            </div>
+            <p class="prose">I built the data pipeline, models, LLM layer and dashboard myself, with a sponsor in Tax as business partner. It started as a pilot on sales tax accounts, then rolled out to payroll, accounting and treasury. Within a year it covered every account in the finance function.</p>
+          </div>
+
+          <div class="block">
+            <h4 class="block-title">Three decisions that made it work</h4>
+            <div class="scroll">
+              <table class="tbl">
+                <thead><tr><th scope="col">What I hit</th><th scope="col">What I did</th></tr></thead>
+                <tbody>
+                  <tr>
+                    <td class="lead"><span class="cell-tag">Forecasting</span>One global model across every account and category gave poor results.</td>
+                    <td>One model per account and flux category, validated walk-forward on a 48-month train and 12-month test window.</td>
+                  </tr>
+                  <tr>
+                    <td class="lead"><span class="cell-tag">Anomalies</span>A single outlier detector was too much trust to place in one model.</td>
+                    <td>Three detectors vote. A journal line counts as an outlier only if flagged two times out of three as contamination varies from 1 to 10%.</td>
+                  </tr>
+                  <tr>
+                    <td class="lead"><span class="cell-tag">Language</span>Finance numbers have to be auditable, and an LLM cannot be their source.</td>
+                    <td>The LLM writes the words only. Every figure comes from the pipeline and reconciles to the ledger.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="mores">
+            <details class="more">
+              <summary class="more-sum">Validation and monitoring</summary>
+              <div class="more-body">
+                <ul>
+                  <li>Walk-forward cross-validation: train on 48 months, test on the next 12, roll forward one month and repeat. MAE, RMSE and MAPE are averaged across folds, and the lowest average error wins for each account and category.</li>
+                  <li>Before each run, input checks confirm every expected account and flux category has arrived, so none are silently missed.</li>
+                  <li>Each model's accuracy is tracked month over month to catch drift, and models are retrained before performance drops.</li>
+                </ul>
+              </div>
+            </details>
+            <details class="more">
+              <summary class="more-sum">Why finance trusts it</summary>
+              <div class="more-body">
+                <ul>
+                  <li><strong>Accuracy.</strong> Numbers come from source systems, never from the LLM.</li>
+                  <li><strong>Accountability.</strong> Every explanation needs analyst approval.</li>
+                  <li><strong>Auditability.</strong> Inputs, prompts, model versions and outputs are logged.</li>
+                </ul>
+              </div>
+            </details>
+            <details class="more">
+              <summary class="more-sum">How I would rebuild it today with AI agents</summary>
+              <div class="more-body">
+                <div class="scroll">
+                  <table class="tbl">
+                    <thead><tr><th scope="col">Step</th><th scope="col">With agents</th></tr></thead>
+                    <tbody>
+                      <tr><td class="lead">Detect</td><td>An agent runs the data exploration, model search and walk-forward validation, then reports the best model per series for review.</td></tr>
+                      <tr><td class="lead">Decode</td><td>An investigation agent drills from a flagged balance into journal lines, invoices and customers, querying the data as it goes.</td></tr>
+                      <tr><td class="lead">Diagnose</td><td>An agent drafts the commentary, cites its sources and checks every figure against the ledger before an analyst sees it.</td></tr>
+                      <tr><td class="lead">Monitoring</td><td>A monitoring agent watches inputs and drift, triggers retraining and alerts the owner.</td></tr>
+                      <tr><td class="lead">Users</td><td>Ask in plain English why an account moved, instead of filtering a dashboard.</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+                <p>The guardrails would stay. Numbers still come from the ledger, analysts still approve every explanation, and every step is still logged.</p>
+              </div>
+            </details>
+          </div>
+
+          <p class="stack"><b>Stack</b>Python &middot; SQL &middot; Databricks &middot; Delta Lake &middot; H2O.ai &middot; LightGBM &middot; SARIMA &middot; Holt-Winters &middot; isolation forest &middot; SHAP &middot; LLM</p>
+        </article>
+
+        <!-- SEM defect classification -->
+        <article class="case case-rule" id="sem">
+          <header class="case-head">
+            <p class="kicker">Intel &middot; 2022&ndash;2024 &middot; Semiconductor manufacturing</p>
+            <h3 class="case-title">SEM defect classification</h3>
+            <p class="dek">A PyTorch computer vision model that labels scanning electron microscope images of wafer defects, so engineers can stop sorting images and start on root causes.</p>
+          </header>
+
+          <div class="block">
+            <h4 class="block-title">The problem</h4>
+            <p class="prose">A fab finds defects in three steps. An inspection tool scans the wafer and marks where the defects are. A review SEM photographs each one. Then someone decides what type of defect each photo shows, because the type points to the cause: particles suggest a contaminated tool, scratches suggest handling. The first two steps were automated. The third was done by eye. It was slow, two engineers could label the same image differently, and the only way to go faster was to add people.</p>
+            <p class="pull">Detecting a defect says something went wrong. Classifying it says where to look.</p>
+          </div>
+
+          <div class="block">
+            <h4 class="block-title">One step in the loop changed</h4>
+            <ol class="stages stages-loop">
+              <li class="stage">
+                <span class="stage-n">1</span>
+                <span class="stage-name stage-name-sm">Process step</span>
+                <span>Layers are built on the wafer.</span>
+              </li>
+              <li class="stage">
+                <span class="stage-n">2</span>
+                <span class="stage-name stage-name-sm">Inspection</span>
+                <span>A scan flags defect locations.</span>
+              </li>
+              <li class="stage">
+                <span class="stage-n">3</span>
+                <span class="stage-name stage-name-sm">SEM review</span>
+                <span>A close-up is taken of each defect.</span>
+              </li>
+              <li class="stage stage-wide stage-hot">
+                <span class="stage-n">4</span>
+                <span class="stage-name stage-name-sm">Classification</span>
+                <span class="was-now">
+                  <span><span class="tag">Before</span> Engineers label each image by eye.</span>
+                  <span><span class="tag">After</span> The model labels each image as 1 of 8 classes.</span>
+                </span>
+              </li>
+              <li class="stage">
+                <span class="stage-n">5</span>
+                <span class="stage-name stage-name-sm">Engineering action</span>
+                <span>Root cause and process fix.</span>
+              </li>
+            </ol>
+          </div>
+
+          <div class="block">
+            <h4 class="block-title">Design choices driven by scarce, varied data</h4>
+            <div class="scroll">
+              <table class="tbl">
+                <thead><tr><th scope="col">Challenge</th><th scope="col">Approach</th></tr></thead>
+                <tbody>
+                  <tr><td class="lead">Few labeled defect images</td><td>Segment each defect and paste it onto new backgrounds to create synthetic training images.</td></tr>
+                  <tr><td class="lead">Varied imaging conditions</td><td>Augment the segmented defects before compositing.</td></tr>
+                  <tr><td class="lead">Synthetic data can flatter results</td><td>Hold out 10% of the real images and test only on those.</td></tr>
+                  <tr><td class="lead">Deployment near fab tools</td><td>SqueezeNet, a lightweight CNN with few parameters.</td></tr>
+                  <tr><td class="lead">Hyperparameter choice</td><td>Grid search over optimizer (SGD, Adam) and learning rate.</td></tr>
+                  <tr><td class="lead">Eight uneven classes</td><td>Score with F1 and Cohen's kappa, since accuracy alone hides weak classes.</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="block">
+            <h4 class="block-title">Result</h4>
+            <div class="figs figs-3">
+              <div class="fig">
+                <span class="fig-n">95%</span>
+                <span class="fig-t">classification accuracy</span>
+              </div>
+              <div class="fig">
+                <span class="fig-n">8 classes</span>
+                <span class="fig-t">no defect, plus seven defect types</span>
+              </div>
+              <div class="fig">
+                <span class="fig-n">Real images only</span>
+                <span class="fig-t">in the test set, so the score is never earned on synthetic data</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="mores">
+            <details class="more">
+              <summary class="more-sum">Training setup</summary>
+              <div class="more-body">
+                <ul>
+                  <li><strong>Stage 1, data.</strong> Resize and crop the review SEM images. Segment each defect, augment it, and paste it onto new backgrounds. Split the synthetic set 80/20 into train and validation.</li>
+                  <li><strong>Stage 2, model.</strong> Grid search over SGD and Adam with learning rates from 10<sup>&minus;1</sup> to 10<sup>&minus;6</sup>, batch size 20 and cross-entropy loss. Train SqueezeNet, predict on the real test set, and evaluate with F1, Cohen's kappa and validation loss.</li>
+                </ul>
+              </div>
+            </details>
+          </div>
+
+          <p class="stack"><b>Stack</b>Python &middot; PyTorch &middot; SqueezeNet &middot; Azure Databricks</p>
+        </article>
+
+        <!-- Personalized Imagery -->
+        <article class="case case-rule" id="imagery">
+          <header class="case-head">
+            <p class="kicker">Gracenote &middot; 2019&ndash;2022 &middot; Media and streaming</p>
+            <h3 class="case-title">Personalized Imagery</h3>
+            <p class="dek">A multi-stage computer vision pipeline that turns trailers into ranked, editor-ready artwork, so a streaming service can show each viewer the image most likely to interest them.</p>
+          </header>
+
+          <div class="block">
+            <h4 class="block-title">The problem</h4>
+            <p class="prose">Personalized artwork needs several strong images for every title, and editors were curating them by hand at about 45 minutes a title. Sourcing stills from production houses works for blockbusters. It breaks down for older, indie and niche titles, which is most of a catalog.</p>
+            <p class="pull">Every title has a trailer, and a studio has already picked its best two minutes.</p>
+            <p class="prose">Trailers show a film's most striking moments without major spoilers, and processing one takes a fraction of the compute and storage of a two-hour feature.</p>
+          </div>
+
+          <div class="block">
+            <h4 class="block-title">The curation pipeline</h4>
+            <ol class="flow" aria-label="Curation pipeline">
+              <li><span class="flow-chip">Source the trailer</span></li>
+              <li><span class="flow-chip">Decode frames</span></li>
+              <li><span class="flow-chip">Detect shot boundaries</span></li>
+              <li><span class="flow-chip">Run vision models</span></li>
+              <li><span class="flow-chip">Score each frame</span></li>
+              <li><span class="flow-chip">Rank frames</span></li>
+              <li><span class="flow-chip">Shortlist for the editor</span></li>
+            </ol>
+            <ul class="checks" aria-label="Automated checks on every frame">
+              <li class="stage">
+                <span class="stage-name stage-name-sm">Face present</span>
+                <span>At least one recognizable face is detected.</span>
+              </li>
+              <li class="stage">
+                <span class="stage-name stage-name-sm">No intertitles</span>
+                <span>Text detection excludes title cards and overlays.</span>
+              </li>
+              <li class="stage">
+                <span class="stage-name stage-name-sm">High quality</span>
+                <span>A blind image quality score keeps crisp frames.</span>
+              </li>
+              <li class="stage">
+                <span class="stage-name stage-name-sm">No motion blur</span>
+                <span>A custom classifier rejects blurred frames.</span>
+              </li>
+            </ul>
+          </div>
+
+          <div class="block">
+            <h4 class="block-title">The model I trained</h4>
+            <p class="prose">Shot detection and image quality ran on open-source models. Motion blur needed a custom one. I built the dataset in-house, had it labeled on Amazon Mechanical Turk, compared InceptionV3 and DenseNet121 in PyTorch, and chose DenseNet for its faster inference. Augmentation and partial layer unfreezing did not help. Retraining all layers did, reaching 91.6% test accuracy and a 0.91 F1 score.</p>
+          </div>
+
+          <div class="block">
+            <h4 class="block-title">Result</h4>
+            <div class="figs figs-3">
+              <div class="fig">
+                <span class="fig-n">+11.2%</span>
+                <span class="fig-t">hours watched per visitor</span>
+              </div>
+              <div class="fig">
+                <span class="fig-n">+7.7%</span>
+                <span class="fig-t">titles watched per visitor</span>
+              </div>
+              <div class="fig">
+                <span class="fig-n">20&ndash;25 min</span>
+                <span class="fig-t">editor curation time per title, down from 45</span>
+              </div>
+            </div>
+            <p class="fine">Consumption lift measured in a six-month A/B test by a top streaming service across 1,000 titles. Built by a team of two data scientists and one engineer.</p>
+          </div>
+
+          <div class="mores">
+            <details class="more">
+              <summary class="more-sum">How it scales</summary>
+              <div class="more-body">
+                <ul>
+                  <li>An ingestion service pushes video IDs to an SQS queue. Failed jobs go to a second queue for retry.</li>
+                  <li>CPU worker pods on Kubernetes (EKS) pull jobs, decode frames with OpenCV, detect shot boundaries, then run face, text, quality and blur inference concurrently.</li>
+                  <li>KEDA scales the pod count with queue depth. Processed frames and metadata land in S3, and Terraform manages the infrastructure.</li>
+                </ul>
+              </div>
+            </details>
+            <details class="more">
+              <summary class="more-sum">Five things that broke, and the fixes</summary>
+              <div class="more-body">
+                <div class="scroll">
+                  <table class="tbl">
+                    <thead><tr><th scope="col">Challenge</th><th scope="col">Fix</th></tr></thead>
+                    <tbody>
+                      <tr><td class="lead">Letterboxed trailers distorted the aspect ratio and degraded frame quality.</td><td>Detect and crop the black bars with FFmpeg before any other processing.</td></tr>
+                      <tr><td class="lead">Face detectors trained on real faces were inconsistent on animated content.</td><td>Identify heavily stylized trailers and exclude them from the pipeline.</td></tr>
+                      <tr><td class="lead">Shot boundary models expect a whole video, which does not scale.</td><td>Run detection on 5-second sliding windows with contextual chunking.</td></tr>
+                      <tr><td class="lead">Processing frames one at a time made inference slow.</td><td>Parallelize inference across frames.</td></tr>
+                      <tr><td class="lead">A fixed pod count could not absorb variable load.</td><td>Kubernetes autoscaling, so pods follow demand.</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </details>
+          </div>
+
+          <p class="stack"><b>Stack</b>Python &middot; PyTorch &middot; OpenCV &middot; FFmpeg &middot; AWS S3, SQS, EC2 &middot; Docker &middot; Kubernetes &middot; KEDA &middot; Terraform &middot; Amazon MTurk</p>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="experience" aria-labelledby="experience-h">
+    <div class="axis"><h2 class="kicker" id="experience-h">Experience</h2></div>
+    <div class="plot">
+      <div class="rows">
+
+        <div class="row">
+          <p class="row-key">Jan 2024 &ndash; Feb 2026</p>
+          <div class="row-body">
+            <h3 class="row-title">Senior Data Scientist</h3>
+            <p class="row-sub">Workday &middot; Pleasanton, CA</p>
+            <ul class="bullets">
+              <li>Designed and owned <a href="#flux">Flux Capacitor</a>, an ML automation engine with end-to-end ETL on SQL, Python and Databricks that identifies account-level financial fluctuations for Treasury, Tax and AP/AR, reducing manual analysis effort by about 50% at month- and quarter-end close.</li>
+              <li>Led treasury cash flow forecasting in Workday Adaptive Planning, running model experimentation and selection to improve 13-week liquidity projections and reporting accuracy.</li>
+              <li>Built a standardized Design of Experiments framework for the Workday Adaptive Predictive Forecaster. It was adopted by 50+ customers and featured at Workday Rising 2025.</li>
+              <li>Architected an agentic proof of concept with LangGraph, Python and Databricks to automate expense report review across about 1,500 daily submissions, with a one-click app for bulk approval, rejection and escalation, and defined the roadmap to production.</li>
+              <li>Ran ML and agentic AI enablement sessions for finance teams using Flowise, with internal documentation to move teams off Excel-centric workflows.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="row">
+          <p class="row-key">Sep 2022 &ndash; Jan 2024</p>
+          <div class="row-body">
+            <h3 class="row-title">Data Scientist</h3>
+            <p class="row-sub">Intel NDTM &middot; Santa Clara, CA</p>
+            <ul class="bullets">
+              <li>Built a RAG pipeline on Azure Databricks with vector search, LLM orchestration and scalable ingestion, powering a chatbot that answers user questions about a business process optimization tool.</li>
+              <li>Fine-tuned a BERT model to a 0.92 macro F1 score to automate IT ticket triage, and put it into production with MLflow and Databricks to classify support requests in real time.</li>
+              <li>Developed the PyTorch model behind <a href="#sem">SEM defect classification</a>, with end-to-end training pipelines on Databricks, reaching 95% accuracy.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="row">
+          <p class="row-key">Sep 2019 &ndash; Sep 2022</p>
+          <div class="row-body">
+            <h3 class="row-title">Machine Learning Engineer</h3>
+            <p class="row-sub">Gracenote &middot; Emeryville, CA</p>
+            <ul class="bullets">
+              <li>Architected the multi-stage computer vision pipeline behind <a href="#imagery">Personalized Imagery</a> on AWS. A/B testing across 1,000+ titles showed an 11.2% lift in hours watched and 7.7% more titles consumed per visitor.</li>
+              <li>Fine-tuned Pegasus models to summarize movie and TV programs, reaching a 90% editorial acceptance rate and beating business KPIs by 12.5%.</li>
+              <li>Engineered a PyTorch motion blur detector on an in-house dataset labeled through Amazon MTurk, with 91.6% accuracy and a 0.91 F1 score.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="row">
+          <p class="row-key">May 2018 &ndash; Jun 2019</p>
+          <div class="row-body">
+            <h3 class="row-title">Data Scientist</h3>
+            <p class="row-sub">Thrive Market &middot; Los Angeles, CA</p>
+            <ul class="bullets">
+              <li>Designed and deployed a "Customers Also Bought" recommender on AWS that lifted order conversion by 2% in A/B testing, an estimated $2M in incremental annual revenue.</li>
+              <li>Architected a real-time review moderation microservice with Python, AWS and NLP that replaced a third-party vendor, saving $90K a year and cutting moderation latency.</li>
+              <li>Led the technical build of Guided Shopping, a personalized onboarding engine that captured 17K leads in its first week, the largest lead-generation event in company history.</li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="skills" aria-labelledby="skills-h">
+    <div class="axis"><h2 class="kicker" id="skills-h">Skills</h2></div>
+    <div class="plot">
+      <dl class="rows rows-tight">
+        <div class="row">
+          <dt class="row-key">Machine learning</dt>
+          <dd class="row-body">GenAI and agentic systems (LangGraph, LangChain, Flowise), time series forecasting, NLP, computer vision, MLOps, MLflow</dd>
+        </div>
+        <div class="row">
+          <dt class="row-key">Languages</dt>
+          <dd class="row-body">Python (Pandas, scikit-learn, PyTorch, XGBoost, LightGBM, Matplotlib, Seaborn), SQL</dd>
+        </div>
+        <div class="row">
+          <dt class="row-key">Platforms</dt>
+          <dd class="row-body">Databricks, Snowflake, AWS (S3, Redshift, SageMaker, Athena, CloudWatch, Lambda), Azure</dd>
+        </div>
+      </dl>
+    </div>
+  </section>
+
+  <section class="section" id="education" aria-labelledby="education-h">
+    <div class="axis"><h2 class="kicker" id="education-h">Education</h2></div>
+    <div class="plot">
+      <div class="rows rows-tight">
+        <div class="row">
+          <p class="row-key">Dec 2017</p>
+          <div class="row-body">
+            <h3 class="row-title">M.S. Electrical Engineering</h3>
+            <p class="row-sub">University of Southern California &middot; Los Angeles, CA</p>
+          </div>
+        </div>
+        <div class="row">
+          <p class="row-key">May 2014</p>
+          <div class="row-body">
+            <h3 class="row-title">B.E. Electrical Engineering</h3>
+            <p class="row-sub">Visvesvaraya Technological University &middot; India</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="contact" aria-labelledby="contact-h">
+    <div class="axis"><h2 class="kicker" id="contact-h">Contact</h2></div>
+    <div class="plot">
+      <p class="pull">Hiring for ML, GenAI or forecasting work? I'd like to hear about it.</p>
+      <div class="contact-list">
+        <div class="contact-row">
+          <span class="kicker contact-key">Email</span>
+          <a class="contact-val" id="email-foot" href="mailto:lokeshbg180@gmail.com">lokeshbg180@gmail.com</a>
+          <button class="btn" type="button" id="copy-foot" data-copy="lokeshbg180@gmail.com" data-target="email-foot">Copy</button>
+        </div>
+        <div class="contact-row">
+          <span class="kicker contact-key">LinkedIn</span>
+          <a class="contact-val" href="https://www.linkedin.com/in/lokeshbg" target="_blank" rel="noopener">linkedin.com/in/lokeshbg</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="wrap foot">
+  <p class="fine">Lokesh Bandahalli Gopalakrishna &middot; Senior Data Scientist</p>
+</footer>
+
+<script>
+(function () {
+  // Illustrative monthly balances: a seasonal account with one real break in year two.
+  var season = [100, 98, 102, 108, 118, 131, 127, 112, 104, 100, 97, 101];
+  var noise1 = [1, -2, 0, 2, -1, 1, -2, 2, 0, -1, 1, 0];
+  var noise2 = [-1, 1, 2, -2, 1, 3, -1, -2, 2, 0, -1, 1];
+  var HALF = 7, THRESH = 115, BREAK = 21, LO = 85, HI = 145;
+  var months = "JFMAMJJASOND";
+  var actual = [], pred = [], i;
+  for (i = 0; i < 12; i++) { actual.push(season[i] + noise1[i]); pred.push(null); }
+  for (i = 0; i < 12; i++) { var p = season[i] * 1.03; pred.push(p); actual.push(p + noise2[i]); }
+  actual[BREAK] = 126;
+
+  var host = document.getElementById("flux-chart");
+  var readout = document.getElementById("flux-readout");
+  var buttons = document.querySelectorAll(".seg-btn");
+  var legendItems = document.querySelectorAll(".legend [data-for]");
+  var NS = "http://www.w3.org/2000/svg";
+  var mode = "range";
+
+  function el(name, attrs, text) {
+    var node = document.createElementNS(NS, name);
+    for (var k in attrs) node.setAttribute(k, attrs[k]);
+    if (text != null) node.textContent = text;
+    return node;
+  }
+  function isFlagged(idx) {
+    if (mode === "threshold") return actual[idx] > THRESH;
+    return pred[idx] != null && Math.abs(actual[idx] - pred[idx]) > HALF;
+  }
+
+  function draw() {
+    var W = Math.max(280, Math.round(host.clientWidth)), H = 250;
+    var m = { l: 34, r: 12, t: 14, b: 44 };
+    var x = function (idx) { return m.l + (W - m.l - m.r) * idx / 23; };
+    var y = function (v) { return m.t + (H - m.t - m.b) * (HI - v) / (HI - LO); };
+    var pts = function (arr) { return arr.map(function (d) { return d[0].toFixed(1) + "," + d[1].toFixed(1); }).join(" "); };
+    var count = 0, k;
+    for (k = 0; k < 24; k++) if (isFlagged(k)) count++;
+
+    var svg = el("svg", {
+      viewBox: "0 0 " + W + " " + H, width: W, height: H, role: "img",
+      "aria-label": mode === "range"
+        ? "Two years of monthly balances with a seasonal summer peak. In year two the expected range follows the peak, and only October falls outside it."
+        : "Two years of monthly balances with a seasonal summer peak. A fixed threshold flags " + count + " months, six of them the summer peak."
+    });
+
+    [100, 120, 140].forEach(function (v) {
+      svg.appendChild(el("line", { x1: m.l, x2: W - m.r, y1: y(v), y2: y(v), "class": "c-grid" }));
+      svg.appendChild(el("text", { x: m.l - 6, y: y(v), dy: "0.32em", "text-anchor": "end", "class": "c-ax" }, v));
+    });
+    var xd = (x(11) + x(12)) / 2;
+    svg.appendChild(el("line", { x1: xd, x2: xd, y1: m.t, y2: H - m.b + 22, "class": "c-grid" }));
+
+    if (mode === "range") {
+      var upper = [], lower = [], mid = [];
+      for (k = 12; k < 24; k++) {
+        upper.push([x(k), y(pred[k] + HALF)]);
+        lower.unshift([x(k), y(pred[k] - HALF)]);
+        mid.push([x(k), y(pred[k])]);
+      }
+      svg.appendChild(el("polygon", { points: pts(upper.concat(lower)), "class": "c-band" }));
+      svg.appendChild(el("polyline", { points: pts(mid), "class": "c-pred" }));
+    } else {
+      svg.appendChild(el("line", { x1: m.l, x2: W - m.r, y1: y(THRESH), y2: y(THRESH), "class": "c-thresh" }));
+    }
+
+    var line = [];
+    for (k = 0; k < 24; k++) line.push([x(k), y(actual[k])]);
+    svg.appendChild(el("polyline", { points: pts(line), "class": "c-actual" }));
+    for (k = 0; k < 24; k++) {
+      var hit = isFlagged(k);
+      svg.appendChild(el("circle", { cx: x(k), cy: y(actual[k]), r: hit ? 5 : 2.2, "class": hit ? "c-flag" : "c-dot" }));
+    }
+
+    if (mode === "range") {
+      svg.appendChild(el("text", { x: x(BREAK), y: y(actual[BREAK]) - 11, "text-anchor": "middle", "class": "c-note c-halo" }, "Oct"));
+    } else {
+      svg.appendChild(el("text", { x: x(11.2), y: y(THRESH) - 6, "text-anchor": "middle", "class": "c-ax c-halo" }, "Threshold"));
+    }
+
+    var step = x(1) - x(0);
+    for (k = 0; k < 24; k++) {
+      if (step >= 13 || k % 3 === 0) {
+        svg.appendChild(el("text", { x: x(k), y: H - m.b + 16, "text-anchor": "middle", "class": "c-ax" }, months.charAt(k % 12)));
+      }
+    }
+    svg.appendChild(el("text", { x: (x(0) + x(11)) / 2, y: H - 6, "text-anchor": "middle", "class": "c-ax" }, "Year 1"));
+    svg.appendChild(el("text", { x: (x(12) + x(23)) / 2, y: H - 6, "text-anchor": "middle", "class": "c-ax" }, "Year 2"));
+
+    while (host.firstChild) host.removeChild(host.firstChild);
+    host.appendChild(svg);
+
+    var lead = "<strong>" + count + (count === 1 ? " month flagged." : " months flagged.") + "</strong> ";
+    readout.innerHTML = mode === "range"
+      ? lead + "The summer peak sits inside the expected range, so nobody has to explain it. October breaks the pattern."
+      : lead + "Six of them are the same summer peak, which trips the rule every year. October gets no more attention than June.";
+  }
+
+  function setMode(next) {
+    mode = next;
+    buttons.forEach(function (b) { b.setAttribute("aria-pressed", String(b.getAttribute("data-mode") === mode)); });
+    legendItems.forEach(function (li) { li.hidden = li.getAttribute("data-for") !== mode; });
+    draw();
+  }
+  buttons.forEach(function (b) {
+    b.addEventListener("click", function () { setMode(b.getAttribute("data-mode")); });
+  });
+
+  draw();
+  if (window.ResizeObserver) {
+    var lastW = 0;
+    new ResizeObserver(function () {
+      var w = Math.round(host.clientWidth);
+      if (w !== lastW) { lastW = w; draw(); }
+    }).observe(host);
+  } else {
+    window.addEventListener("resize", draw);
+  }
+
+  // Copy buttons: write to the clipboard, or select the address if the viewer's app refuses.
+  document.querySelectorAll("[data-copy]").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var done = function (label) {
+        btn.textContent = label;
+        setTimeout(function () { btn.textContent = "Copy"; }, 2200);
+      };
+      var selectIt = function () {
+        var target = document.getElementById(btn.getAttribute("data-target"));
+        var range = document.createRange();
+        range.selectNodeContents(target);
+        var sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(range);
+        done("Selected");
+      };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(btn.getAttribute("data-copy")).then(function () { done("Copied"); }, selectIt);
+      } else {
+        selectIt();
+      }
+    });
+  });
+})();
+</script>
+</body>
+</html>
